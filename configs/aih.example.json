@@ -1,0 +1,53 @@
+{
+  "secret_service": {
+    "kind": "1password-service-account",
+    "provider": "1password",
+    "service_account_env": "OP_SERVICE_ACCOUNT_TOKEN",
+    "vault_name": "AIAGENTS",
+    "vault_uuid": "ui2hktsvdem6rq66s5rlm7gwme"
+  },
+  "secret_aliases": [
+    {
+      "name": "llm-api-key",
+      "category": "token",
+      "backend": "1password-service-account",
+      "reference": "op://AIAGENTS/PIPELLM_API_KEY/credential",
+      "reveal_policy": "never",
+      "usage_policy": "opaque_use"
+    },
+    {
+      "name": "llm-base-url",
+      "category": "credential",
+      "backend": "1password-service-account",
+      "reference": "op://AIAGENTS/PIPELLM_API_KEY/BASE_URL",
+      "reveal_policy": "allowed",
+      "usage_policy": "reveal"
+    }
+  ],
+  "llm_profiles": {
+    "primary_profile": "default",
+    "profiles": [
+      {
+        "name": "default",
+        "category": "llm_api",
+        "backend": "1password-service-account",
+        "secret_alias": "llm-api-key",
+        "reveal_policy": "never",
+        "usage_policy": "opaque_use",
+        "allowed_actions": [
+          "llm.verify",
+          "llm.request",
+          "llm.models"
+        ],
+        "base_url_alias": "llm-base-url",
+        "default_models": [
+          "gpt-5.4-mini"
+        ],
+        "metadata": {
+          "protocol": "openai_chat_completions",
+          "auth_scheme": "bearer"
+        }
+      }
+    ]
+  }
+}

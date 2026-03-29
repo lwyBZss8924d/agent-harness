@@ -1,0 +1,5 @@
+interface:
+  display_name: "Harness Facts"
+  short_description: "Use aih for host facts and discovery snapshots"
+  default_prompt: "Use $workstation-harness-facts-discovery to refresh facts and inspect workstation discovery state."
+
