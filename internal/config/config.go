@@ -115,8 +115,10 @@ func Load() Config {
 
 func defaultConfig() Config {
 	agentsDir := paths.AgentsDir()
+	sourceRepoRoot := paths.SourceRepoRoot()
+	runtimeBrowserDir := defaultRuntimeBrowserDir(sourceRepoRoot, agentsDir)
 	return Config{
-		SourceRepoRoot: paths.SourceRepoRoot(),
+		SourceRepoRoot: sourceRepoRoot,
 		AgentsDir:      agentsDir,
 		LegacyRuntime:  defaultLegacyRuntime(agentsDir),
 		CompatBackend:  "legacy-python",
@@ -154,9 +156,9 @@ func defaultConfig() Config {
 			CDPPortDefault:       9222,
 			ChromeAppPath:        "/Applications/Google Chrome.app",
 			ChromeBinaryPath:     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-			AutomationProfileDir: filepath.Join(agentsDir, "browser", "chrome-cdp-profile"),
-			PlaywrightHelperPath: filepath.Join(agentsDir, "tools", "browser", "verify-playwright.mjs"),
-			PlaywrightCoreDir:    filepath.Join(agentsDir, "tools", "browser", "node_modules", "playwright-core"),
+			AutomationProfileDir: filepath.Join(agentsDir, "state", "browser", "chrome-cdp-profile"),
+			PlaywrightHelperPath: filepath.Join(runtimeBrowserDir, "verify-playwright.mjs"),
+			PlaywrightCoreDir:    filepath.Join(runtimeBrowserDir, "node_modules", "playwright-core"),
 			DoctorChecksEnabled:  false,
 		},
 		DevOps: DevOpsConfig{
@@ -208,6 +210,24 @@ func defaultLegacyRuntime(agentsDir string) string {
 		return candidate
 	}
 	return ""
+}
+
+func defaultRuntimeBrowserDir(sourceRepoRoot, agentsDir string) string {
+	candidates := []string{
+		filepath.Join(sourceRepoRoot, "dist", "current", "runtime", "browser"),
+		filepath.Join(sourceRepoRoot, "runtime", "browser"),
+		filepath.Join(agentsDir, "runtime", "browser"),
+		filepath.Join(agentsDir, "tools", "browser"),
+	}
+	for _, candidate := range candidates {
+		if candidate == "" {
+			continue
+		}
+		if _, err := os.Stat(candidate); err == nil {
+			return candidate
+		}
+	}
+	return filepath.Join(sourceRepoRoot, "dist", "current", "runtime", "browser")
 }
 
 func applyEnvOverrides(cfg Config) Config {

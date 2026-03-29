@@ -31,8 +31,8 @@ These commands intentionally focus on a small generic contract:
 
 `facts refresh` writes:
 
-- JSON: `~/.agents/os-dev-environment/generated/host-facts.json`
-- Markdown: `~/.agents/os-dev-environment/generated/host-facts.md`
+- JSON: `~/.agents/state/facts/host-facts.json`
+- Markdown: `~/.agents/state/facts/host-facts.md`
 
 The JSON payload is intended to be the machine-readable source of truth.
 The Markdown file is the scan-friendly projection for operators.

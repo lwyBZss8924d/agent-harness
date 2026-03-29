@@ -47,7 +47,7 @@ The release/install side of `0.0.1` should also provide:
 `0.0.1` should preserve:
 
 - no plaintext reveal by default
-- explicit unsafe/admin gates
+- release-installed packages disable generic unsafe reveal/env-injection surfaces
 - JSON-first operational status
 - fresh SSH usability with no 1Password desktop prompt
 - repo-local config support

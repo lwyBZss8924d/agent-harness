@@ -56,7 +56,7 @@ The toolkit version should be carried in:
 
 Recommended format:
 
-- dev: `0.0.1-dev`
+- dev: `0.0.1-dev.1`
 - preview: `0.0.1-beta.1`
 - stable: `0.0.1`
 

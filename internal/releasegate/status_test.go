@@ -3,11 +3,11 @@ package releasegate
 import "testing"
 
 func TestEvaluateReleaseStatus(t *testing.T) {
-	status := Evaluate("0.0.1-dev")
+	status := Evaluate("0.0.1-dev.1")
 	if status.ReleaseTarget != "0.0.1" {
 		t.Fatalf("ReleaseTarget = %q", status.ReleaseTarget)
 	}
-	if status.CurrentVersion != "0.0.1-dev" {
+	if status.CurrentVersion != "0.0.1-dev.1" {
 		t.Fatalf("CurrentVersion = %q", status.CurrentVersion)
 	}
 	if status.TotalGateCount == 0 {

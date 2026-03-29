@@ -10,7 +10,7 @@ mkdir -p "$build_meta_dir"
 
 cd "${repo_root}"
 
-version="${AIH_VERSION:-0.0.1-dev}"
+version="${AIH_VERSION:-0.0.1-dev.1}"
 commit="${AIH_GIT_COMMIT:-unknown}"
 built_at="${AIH_BUILD_TIME:-$(date -u '+%Y-%m-%dT%H:%M:%SZ')}"
 ldflags="-X github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/version.Version=${version} -X github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/version.GitCommit=${commit} -X github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/version.BuildTime=${built_at}"
