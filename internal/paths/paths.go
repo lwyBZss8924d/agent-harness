@@ -11,6 +11,11 @@ const (
 	GeneratedFactsRoot = ".agents/state/facts"
 )
 
+var (
+	executablePath = os.Executable
+	evalSymlinks   = filepath.EvalSymlinks
+)
+
 func HomeDir() string {
 	if home, err := os.UserHomeDir(); err == nil {
 		return home
@@ -23,6 +28,29 @@ func SourceRepoRoot() string {
 		return value
 	}
 	return filepath.Join(HomeDir(), DefaultSourceRepo)
+}
+
+func InstalledRuntimeDir() string {
+	exePath, err := executablePath()
+	if err != nil {
+		return ""
+	}
+	if resolved, err := evalSymlinks(exePath); err == nil {
+		exePath = resolved
+	}
+	exePath = filepath.Clean(exePath)
+	if filepath.Base(exePath) != "aih" {
+		return ""
+	}
+	binDir := filepath.Dir(exePath)
+	if filepath.Base(binDir) != "bin" {
+		return ""
+	}
+	runtimeDir := filepath.Join(filepath.Dir(binDir), "runtime")
+	if _, err := os.Stat(runtimeDir); err == nil {
+		return runtimeDir
+	}
+	return ""
 }
 
 func AgentsDir() string {
