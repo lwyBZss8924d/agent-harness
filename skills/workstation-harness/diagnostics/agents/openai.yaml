@@ -1,0 +1,5 @@
+interface:
+  display_name: "Harness Diagnostics"
+  short_description: "Use aih doctor/service/auth as operator verdicts"
+  default_prompt: "Use $workstation-harness-diagnostics to run `aih doctor --json` and interpret the verdict before acting."
+

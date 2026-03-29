@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness DevOps"
+  short_description: "Use aih devops for Docker and Kubernetes workflows"
+  default_prompt: "Use $workstation-harness-devops-runtime-ops to inspect Docker, Kubernetes, or registry state through `aih devops`."

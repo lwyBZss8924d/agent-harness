@@ -1,0 +1,37 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Build release artifacts
+        env:
+          AIH_VERSION: ${{ github.ref_name }}
+          AIH_GIT_COMMIT: ${{ github.sha }}
+          AIH_BUILD_TIME: ${{ github.event.head_commit.timestamp }}
+        run: ./scripts/build-release.sh
+      - name: Archive binaries
+        run: |
+          mkdir -p release
+          cp build/bin/aih release/
+          cp build/bin/op-sa-broker release/
+          cp build/bin/op-sa-broker-client release/
+          cp build/release-manifest.json release/
+          tar -czf aih-toolkit-${{ github.ref_name }}-darwin.tgz -C release .
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            aih-toolkit-${{ github.ref_name }}-darwin.tgz

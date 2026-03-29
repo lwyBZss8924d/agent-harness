@@ -1,0 +1,5 @@
+interface:
+  display_name: "Harness Secret Runtime"
+  short_description: "Operate aih secret safely on agent workstations"
+  default_prompt: "Use $workstation-harness-secret-runtime to inspect secret runtime health and choose the safest `aih` secret flow."
+
