@@ -214,6 +214,7 @@ func defaultLegacyRuntime(agentsDir string) string {
 
 func defaultRuntimeBrowserDir(sourceRepoRoot, agentsDir string) string {
 	candidates := []string{
+		filepath.Join(paths.InstalledRuntimeDir(), "browser"),
 		filepath.Join(sourceRepoRoot, "dist", "current", "runtime", "browser"),
 		filepath.Join(sourceRepoRoot, "runtime", "browser"),
 		filepath.Join(agentsDir, "runtime", "browser"),
