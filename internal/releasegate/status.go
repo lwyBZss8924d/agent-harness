@@ -170,8 +170,8 @@ func Evaluate(currentVersion string) ReleaseStatus {
 			Title:  "Facts and Discovery",
 			Status: StatusComplete,
 			SourceDocs: []string{
-				"/Users/ai-agent-owner/.agents/os-dev-environment/index.llms.txt",
-				"/Users/ai-agent-owner/.agents/os-dev-environment/system.llms.txt",
+				"skills/workstation-harness/facts-discovery/SKILL.md",
+				"docs/FACTS_DISCOVERY.md",
 			},
 			Projection: "Core `aih facts` and `aih env summary` surfaces now provide host identity, runtime inventory, session-sensitive facts, and generated machine snapshots.",
 		},
@@ -180,8 +180,8 @@ func Evaluate(currentVersion string) ReleaseStatus {
 			Title:  "Doctor and Diagnostics",
 			Status: StatusInProgress,
 			SourceDocs: []string{
-				"/Users/ai-agent-owner/.agents/harness-cli.llms.txt",
-				"/Users/ai-agent-owner/.agents/os-dev-environment/services-ports.llms.txt",
+				"skills/workstation-harness/diagnostics/SKILL.md",
+				"docs/DOCTOR_SERVICE_AUTH.md",
 			},
 			Projection: "Initial `doctor`, `service status`, and `auth status` command surfaces now exist with verdict summaries, issue-source attribution, severity overrides, and config-driven noise controls; the next step is to deepen the heuristic quality.",
 		},
@@ -190,8 +190,8 @@ func Evaluate(currentVersion string) ReleaseStatus {
 			Title:  "DevOps and Unattended Runtime Ops",
 			Status: StatusInProgress,
 			SourceDocs: []string{
-				"/Users/ai-agent-owner/.agents/os-dev-environment/devops-tools.llms.txt",
-				"/Users/ai-agent-owner/.agents/os-dev-environment/package-managers.llms.txt",
+				"skills/workstation-harness/devops-runtime-ops/SKILL.md",
+				"docs/DEVOPS_RUNTIME_OPS.md",
 			},
 			Projection: "Initial `devops` status and read-only/light operator subcommands now report tools, Docker, registry, Kubernetes, containers, images, volumes, namespaces, contexts, nodes, events, and logs; the next step is to deepen this into richer generic workflows.",
 		},
@@ -200,8 +200,8 @@ func Evaluate(currentVersion string) ReleaseStatus {
 			Title:  "Browser and Validation Harness",
 			Status: StatusComplete,
 			SourceDocs: []string{
-				"/Users/ai-agent-owner/.agents/harness-cli.llms.txt",
-				"/Users/ai-agent-owner/.agents/os-dev-environment/ai-agents.llms.txt",
+				"skills/workstation-harness/browser-validation/SKILL.md",
+				"docs/BROWSER_VALIDATION.md",
 			},
 			Projection: "Core browser status, launch-cdp, and Playwright verification commands now exist and have been validated on the reference workstation as a generic local harness domain.",
 		},

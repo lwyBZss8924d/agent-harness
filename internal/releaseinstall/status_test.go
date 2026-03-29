@@ -25,14 +25,14 @@ func TestDetectMode(t *testing.T) {
 func TestReadManifest(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "manifest.json")
-	if err := os.WriteFile(path, []byte(`{"version":"0.0.1-dev"}`), 0o644); err != nil {
+	if err := os.WriteFile(path, []byte(`{"version":"0.0.1-dev.1"}`), 0o644); err != nil {
 		t.Fatalf("WriteFile: %v", err)
 	}
 	manifest, ok := readManifest(path)
 	if !ok {
 		t.Fatal("readManifest returned !ok")
 	}
-	if got := manifest["version"]; got != "0.0.1-dev" {
+	if got := manifest["version"]; got != "0.0.1-dev.1" {
 		t.Fatalf("manifest version = %#v", got)
 	}
 }

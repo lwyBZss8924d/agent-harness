@@ -129,6 +129,10 @@ Restricted/default-denied commands:
 - broad secret enumeration
 - arbitrary backend passthrough
 
+For release-installed workstation packages, break-glass plaintext reveal and
+generic env-injection surfaces are disabled. Those unsafe paths are reserved
+for non-release engineering contexts.
+
 ## Configuration Layers
 
 The runtime should support layered configuration:

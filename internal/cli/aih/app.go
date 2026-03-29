@@ -27,10 +27,12 @@ import (
 	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/profilereadiness"
 	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/profilescaffold"
 	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/releasegate"
+	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/releaseinstall"
 	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/runtimeauth"
 	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/runtimeprobe"
 	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/secretbackendregistry"
 	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/secretpolicy"
+	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/secretregistry"
 	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/secrets"
 	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/servicestatus"
 	"github.com/lwyBZss8924d/agent-harness/aih-toolkit/internal/version"
@@ -39,6 +41,10 @@ import (
 type App struct {
 	Stdout io.Writer
 	Stderr io.Writer
+}
+
+var detectInstallMode = func() string {
+	return releaseinstall.Detect().Mode
 }
 
 func New() *App {
@@ -1294,6 +1300,10 @@ func (a *App) runSecretRead(args []string) int {
 		fmt.Fprintln(a.Stderr, "aih-go secret read: plaintext reveal is disabled by default; set AIH_UNSAFE_REVEAL=1 or pass --unsafe-reveal in admin mode")
 		return 2
 	}
+	if !allowUnsafeSecretSurface() {
+		fmt.Fprintln(a.Stderr, "aih-go secret read: plaintext reveal is disabled in release-installed mode")
+		return 2
+	}
 
 	cfg := config.Load()
 	result, err := secrets.ResolveReferenceNative(context.Background(), cfg, trimmed[0])
@@ -1333,13 +1343,26 @@ func (a *App) runSecretGet(args []string) int {
 	}
 
 	cfg := config.Load()
-	entry, result, err := secrets.ResolveAlias(context.Background(), cfg, trimmed[0])
-	if err != nil {
-		fmt.Fprintf(a.Stderr, "aih-go secret get: %v\n", err)
+	entry, ok := lookupSecretAlias(cfg, trimmed[0])
+	if !ok {
+		fmt.Fprintf(a.Stderr, "aih-go secret get: alias %q is not configured\n", trimmed[0])
 		return 2
 	}
 	if !unsafeReveal && os.Getenv("AIH_UNSAFE_REVEAL") != "1" && entry.RevealPolicy != secretpolicy.RevealAllowed {
 		fmt.Fprintf(a.Stderr, "aih-go secret get: alias %q is not revealable by default (reveal_policy=%s)\n", entry.Name, entry.RevealPolicy)
+		return 2
+	}
+	if entry.RevealPolicy == secretpolicy.RevealNever {
+		fmt.Fprintf(a.Stderr, "aih-go secret get: alias %q is not revealable (reveal_policy=%s)\n", entry.Name, entry.RevealPolicy)
+		return 2
+	}
+	if entry.RevealPolicy == secretpolicy.RevealAdminOnly && !allowUnsafeSecretSurface() {
+		fmt.Fprintf(a.Stderr, "aih-go secret get: alias %q requires non-release admin mode for plaintext reveal\n", entry.Name)
+		return 2
+	}
+	_, result, err := secrets.ResolveAlias(context.Background(), cfg, trimmed[0])
+	if err != nil {
+		fmt.Fprintf(a.Stderr, "aih-go secret get: %v\n", err)
 		return 2
 	}
 
@@ -1402,6 +1425,10 @@ func (a *App) runSecretEnv(args []string) int {
 		fmt.Fprintln(a.Stderr, "aih-go secret env: env injection is disabled by default; set AIH_UNSAFE_INJECT=1 or pass --unsafe-inject in admin mode")
 		return 2
 	}
+	if !allowUnsafeSecretSurface() {
+		fmt.Fprintln(a.Stderr, "aih-go secret env: env injection is disabled in release-installed mode")
+		return 2
+	}
 
 	cfg := config.Load()
 	token, source, err := runtimeauth.ResolveServiceAccountToken(cfg)
@@ -1446,6 +1473,10 @@ func (a *App) runSecretExec(args []string) int {
 	}
 	if !unsafeInject && os.Getenv("AIH_UNSAFE_INJECT") != "1" {
 		fmt.Fprintln(a.Stderr, "aih-go secret exec: env injection is disabled by default; set AIH_UNSAFE_INJECT=1 or pass --unsafe-inject in admin mode")
+		return 2
+	}
+	if !allowUnsafeSecretSurface() {
+		fmt.Fprintln(a.Stderr, "aih-go secret exec: env injection is disabled in release-installed mode")
 		return 2
 	}
 
@@ -1526,6 +1557,19 @@ func (a *App) runSecretSudo(args []string) int {
 		return 1
 	}
 	return 0
+}
+
+func allowUnsafeSecretSurface() bool {
+	return detectInstallMode() != "release-installed"
+}
+
+func lookupSecretAlias(cfg config.Config, name string) (secretregistry.Entry, bool) {
+	for _, entry := range cfg.SecretAliases {
+		if entry.Name == name {
+			return entry, true
+		}
+	}
+	return secretregistry.Entry{}, false
 }
 
 func (a *App) runSecretBootstrapToken(args []string) int {

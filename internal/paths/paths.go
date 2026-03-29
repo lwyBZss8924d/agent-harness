@@ -7,9 +7,8 @@ import (
 
 const (
 	DefaultSourceRepo  = "dev-space/aih-toolkit"
-	LegacyRuntimeRoot  = ".agents/tools"
 	AgentsRoot         = ".agents"
-	GeneratedFactsRoot = ".agents/os-dev-environment/generated"
+	GeneratedFactsRoot = ".agents/state/facts"
 )
 
 func HomeDir() string {
@@ -31,7 +30,11 @@ func AgentsDir() string {
 }
 
 func LegacyRuntimeDir() string {
-	return filepath.Join(HomeDir(), LegacyRuntimeRoot)
+	candidate := filepath.Join(HomeDir(), AgentsRoot, "tools")
+	if _, err := os.Stat(candidate); err == nil {
+		return candidate
+	}
+	return ""
 }
 
 func GeneratedFactsDir() string {

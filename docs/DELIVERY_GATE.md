@@ -49,7 +49,7 @@ The first formal release boundary is `aih secret`.
    - `macos-keychain`
 4. It enforces agent-safe defaults:
    - no plaintext reveal by default
-   - explicit unsafe/admin gates
+   - release-installed packages do not allow generic unsafe reveal/env-injection bypass
    - stable JSON status/audit
 5. It supports configuration-driven profiles and aliases:
    - workstation-global config

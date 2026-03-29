@@ -3,13 +3,13 @@
 `aih` is the AI-first workstation harness toolkit for AI-agent-operated owner workstations.
 
 This repository is the **source of truth** for the next-generation Go implementation.
-It is intentionally separate from the current deployed runtime under `~/.agents/tools`.
+It is intentionally separate from any legacy bespoke runtime that may still exist under `~/.agents`.
 
 ## Source vs Runtime
 
 - Development source repo: `<repo-root>`
 - Target workstation state and docs: `<workstation-home>/.agents`
-- Target workstation legacy deployed runtime: `<workstation-home>/.agents/tools`
+- Target workstation legacy bespoke runtime: `<workstation-home>/.agents/retired/...`
 - Target workstation installed entrypoints:
   - `/usr/local/bin/aih`
   - `<workstation-home>/.local/bin/*`

@@ -8,6 +8,9 @@ launch_agent_dir="${AIH_LAUNCH_AGENT_DIR:-${HOME}/Library/LaunchAgents}"
 broker_label="${AIH_BROKER_LABEL:-com.ai-agent-owner.op-sa-broker}"
 config_file="${AIH_CONFIG_FILE:-${HOME}/.config/aih/config.json}"
 broker_socket="${AIH_BROKER_SOCKET:-${HOME}/.agents/run/op-sa-broker.sock}"
+browser_runtime_dir="${repo_root}/dist/current/runtime/browser"
+shell_runtime_dir="${repo_root}/dist/current/runtime/shell"
+config_runtime_dir="${HOME}/.config/aih/runtime"
 
 "${repo_root}/scripts/build-release.sh"
 "${repo_root}/scripts/install-release.sh"
@@ -66,3 +69,22 @@ echo "installed workstation package:"
 echo "  aih shim: ${system_bin_dir}/aih"
 echo "  broker plist: ${launch_agent_dir}/${broker_label}.plist"
 echo "  release root: ${repo_root}/dist/current"
+
+if [[ -d "${shell_runtime_dir}" ]]; then
+  mkdir -p "${config_runtime_dir}/shell"
+  cp -R "${shell_runtime_dir}/." "${config_runtime_dir}/shell/"
+  chmod 755 "${config_runtime_dir}/shell/"*.sh 2>/dev/null || true
+  echo "  shell runtime: ${config_runtime_dir}/shell"
+fi
+
+if [[ -f "${browser_runtime_dir}/package.json" ]]; then
+  if command -v npm >/dev/null 2>&1; then
+    (
+      cd "${browser_runtime_dir}"
+      npm install --omit=dev --no-audit --no-fund >/dev/null
+    )
+    echo "  browser runtime: ${browser_runtime_dir}"
+  else
+    echo "warning: npm not found; browser runtime dependencies not installed under ${browser_runtime_dir}" >&2
+  fi
+fi

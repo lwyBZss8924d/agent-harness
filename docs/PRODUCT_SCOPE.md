@@ -17,7 +17,7 @@ configuration-driven secret runtime. The formal `0.0.1` scope is:
    - stable subcommands
    - machine-readable JSON
    - short actionable errors
-   - explicit unsafe/admin gates
+   - non-release engineering mode may expose explicit break-glass gates, but release-installed workstation packages do not
 6. Leave extensibility hooks for future backends and action protocols.
 
 ## Non-Goals

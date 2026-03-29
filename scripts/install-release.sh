@@ -30,6 +30,8 @@ PY
 
 release_root="${releases_root}/${version}"
 bin_dir="${release_root}/bin"
+runtime_src_dir="${repo_root}/runtime"
+runtime_dir="${release_root}/runtime"
 
 mkdir -p "$bin_dir" "$shim_dir" "$releases_root"
 
@@ -37,6 +39,11 @@ cp "${src_dir}/aih" "${bin_dir}/aih"
 cp "${src_dir}/op-sa-broker" "${bin_dir}/op-sa-broker"
 cp "${src_dir}/op-sa-broker-client" "${bin_dir}/op-sa-broker-client"
 cp "${build_manifest}" "${release_root}/manifest.json"
+if [[ -d "${runtime_src_dir}" ]]; then
+  rm -rf "${runtime_dir}"
+  mkdir -p "${runtime_dir}"
+  cp -R "${runtime_src_dir}/." "${runtime_dir}/"
+fi
 
 ln -sfn "${release_root}" "${current_link}"
 
